@@ -84,6 +84,7 @@ export interface JsxAST extends AST {
 export type AdditionalProps = {
   onError?: (error: Error) => void;
   override?: Object;
+  onLoad?: Function;
 };
 
 export type UriProps = { uri: string | null } & AdditionalProps;
@@ -124,17 +125,21 @@ export function SvgXml(props: XmlProps) {
 
 export async function fetchText(uri: string) {
   const response = await fetch(uri);
-  return await response.text();
+  return response.ok ? await response.text() : null;
 }
 
 export function SvgUri(props: UriProps) {
-  const { onError = err, uri } = props;
+  const { onError = err, uri, onLoad = () => {} } = props;
   const [xml, setXml] = useState<string | null>(null);
   useEffect(() => {
     uri
       ? fetchText(uri)
-          .then(setXml)
-          .catch(onError)
+        .then((response) => {
+          onLoad(true)
+          setXml(response)
+          return
+        })
+        .catch(onError)
       : setXml(null);
   }, [onError, uri]);
   return <SvgXml xml={xml} override={props} />;
@@ -295,7 +300,7 @@ export function parse(source: string, middleware?: Middleware): JsxAST | null {
     while (
       i + 1 < length &&
       (source[i] !== '<' || !validNameCharacters.test(source[i + 1]))
-    ) {
+      ) {
       i++;
     }
 

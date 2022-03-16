@@ -300,7 +300,7 @@ export function parse(source: string, middleware?: Middleware): JsxAST | null {
     while (
       i + 1 < length &&
       (source[i] !== '<' || !validNameCharacters.test(source[i + 1]))
-      ) {
+    ) {
       i++;
     }
 

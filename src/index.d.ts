@@ -242,7 +242,6 @@ export interface CircleProps extends CommonPathProps {
   cx?: NumberProp;
   cy?: NumberProp;
   opacity?: NumberProp;
-  r?: NumberProp;
 }
 export const Circle: React.ComponentClass<CircleProps>;
 export type Circle = React.ComponentClass<CircleProps>;
